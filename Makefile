@@ -1,4 +1,7 @@
-TAGLIB := /data/data/com.termux/files/usr/lib/libtag.so
+#
+# 仅适用于使用GCC编译器编译
+#
+
 SRC_DIR := $(PWD)/src
 BUILD_DIR := $(PWD)/build
 
@@ -8,13 +11,18 @@ BUILD_DIR := $(PWD)/build
 SOURCE := $(SRC_DIR)/main.cpp
 TARGET := $(SOURCE:$(SRC_DIR)%.cpp=$(BUILD_DIR)%)
 
+CC := g++
+COMPILER_FLAGS := -O3 $(shell taglib-config --libs)
+
 .PHONY:	all
 all: build
 
-.PHONY:	build
-build: $(SOURCE)
-	if [ ! -d "build" ]; then mkdir build; fi;
-	g++ -ldl $(TAGLIB) $(SOURCE) -o $(TARGET)
+$(TARGET): $(SOURCE)
+	@if [ ! -d "build" ]; then mkdir build; fi;
+	$(CC) $(COMPILER_FLAGS) $(SOURCE) -o $(TARGET)
+
+.PHONY: build
+build: $(TARGET)
 
 .PHONY: clean
 clean:
