@@ -11,7 +11,7 @@ BUILD_DIR := $(PWD)/build
 SOURCE := $(SRC_DIR)/main.cpp
 TARGET := $(SOURCE:$(SRC_DIR)%.cpp=$(BUILD_DIR)%)
 
-CC := g++
+CC := clang++
 COMPILER_FLAGS := -O3 $(shell taglib-config --libs)
 
 .PHONY:	all
