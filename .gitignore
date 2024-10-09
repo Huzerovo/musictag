@@ -1,2 +1,7 @@
 build/
 *.mp3
+*.jpg
+.cache/
+compile_commands.json
+example.jpg
+wrappers/

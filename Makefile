@@ -1,29 +1,32 @@
-#
-# 仅适用于使用GCC编译器编译
-#
+PROJECT := musictag
 
-SRC_DIR := $(PWD)/src
-BUILD_DIR := $(PWD)/build
+SRC_DIR := src
+BUILD_DIR := build
 
-#SOURCE := $(shell find $(SRC_DIR) -name "*.c")
-#TARGET := $(SRC:%=$(BUILD_DIR)/%.o)
-
-SOURCE := $(SRC_DIR)/main.cpp
-TARGET := $(SOURCE:$(SRC_DIR)%.cpp=$(BUILD_DIR)%)
+SOURCE := $(shell find $(SRC_DIR) -name "*.cpp")
+OBJECT := $(SOURCE:$(SRC_DIR)/%=$(BUILD_DIR)/%.o)
+TARGET := $(BUILD_DIR)/$(PROJECT)
 
 CC := clang++
-COMPILER_FLAGS := -O3 $(shell taglib-config --libs)
+CC_FLAGS := -O3 -g
+LD_FLAGS := $(shell taglib-config --libs)
 
 .PHONY:	all
 all: build
 
-$(TARGET): $(SOURCE)
-	@if [ ! -d "build" ]; then mkdir build; fi;
-	$(CC) $(COMPILER_FLAGS) $(SOURCE) -o $(TARGET)
+.PHONY: mkdir
+mkdir:
+	@if [ ! -d "$(BUILD_DIR)" ]; then mkdir "$(BUILD_DIR)"; fi;
 
 .PHONY: build
-build: $(TARGET)
+build: mkdir $(TARGET)
 
 .PHONY: clean
 clean:
 	rm -rf build
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%
+	$(CC) $(CC_FLAGS) -c $< -o $@
+
+$(TARGET): $(OBJECT)
+	$(CC) -g $(LD_FLAGS) $(OBJECT) -o $@
