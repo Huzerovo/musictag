@@ -66,6 +66,9 @@ void usage()
     std::cout << "usage: musictag [OPTIONS] <file>\n\n"
               << "OPTIONS:\n"
               << "  -L, --list              List tags then exit.\n"
+              << "      --list-artist       Print the artist.\n"
+              << "      --list-title        Print the titler.\n"
+              << "      --list-comment      Print the comment.\n"
               << "  -E, --extract <img>     Extract image and save to <img> "
                  "then exit.\n"
               << "  -R, --remove            Remove all tags\n\n"
@@ -78,21 +81,28 @@ void usage()
 }
 
 static int flag_list;
+static int flag_list_title;
+static int flag_list_artist;
+static int flag_list_comment;
 static int flag_extract;
 static int flag_remove;
 static int flag_help;
 static int flag_version;
 
 static struct option options_map[] = {
-    {    "list",       no_argument,    &flag_list,   1 },
-    { "extract", required_argument, &flag_extract,   1 },
-    {  "remove",       no_argument,  &flag_remove,   1 },
-    {   "image", required_argument,             0, 'i' },
-    {  "artist", required_argument,             0, 'a' },
-    {   "title", required_argument,             0, 't' },
-    { "comment", required_argument,             0, 'c' },
-    {    "help",       no_argument,    &flag_help,   1 },
-    { "version",       no_argument, &flag_version,   1 }
+    {         "list",       no_argument,         &flag_list,   1 },
+    {   "list-title",       no_argument,   &flag_list_title,   1 },
+    {  "list-artist",       no_argument,  &flag_list_artist,   1 },
+    { "list-comment",       no_argument, &flag_list_comment,   1 },
+    {      "extract", required_argument,      &flag_extract,   1 },
+    {       "remove",       no_argument,       &flag_remove,   1 },
+    {        "image", required_argument,                  0, 'i' },
+    {       "artist", required_argument,                  0, 'a' },
+    {        "title", required_argument,                  0, 't' },
+    {      "comment", required_argument,                  0, 'c' },
+    {         "help",       no_argument,         &flag_help,   1 },
+    {      "version",       no_argument,      &flag_version,   1 },
+    { 0, 0, 0, 0 }
 };
 
 int main(int argc, char **argv)
@@ -174,6 +184,21 @@ int main(int argc, char **argv)
     if (fr.isNull()) {
         std::cerr << "Can not open file: " << argv[optind] << std::endl;
         return 1;
+    }
+
+    if (flag_list_title) {
+        std::cout << fr.tag()->title().toCString(true) << std::endl;
+        return 0;
+    }
+
+    if (flag_list_artist) {
+        std::cout << fr.tag()->artist().toCString(true) << std::endl;
+        return 0;
+    }
+
+    if (flag_list_comment) {
+        std::cout << fr.tag()->comment().toCString(true) << std::endl;
+        return 0;
     }
 
     if (flag_list) {
